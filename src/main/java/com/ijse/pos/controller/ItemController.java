@@ -20,9 +20,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
-
-
-
 @RestController
 public class ItemController {
 
@@ -31,7 +28,7 @@ public class ItemController {
 
     @Autowired
     private CategoryService categoryService;
-    
+
     @GetMapping("/items")
     public ResponseEntity<List<Item>> getItemList() {
         List<Item> items = itemService.getItemList();
@@ -44,25 +41,25 @@ public class ItemController {
         return ResponseEntity.status(200).body(item);
     }
 
-@PostMapping("/item")
-public ResponseEntity<?> saveItem(@RequestBody ItemRequestDto itemRequestDto) {
-    Item item = new Item();
-    item.setName(itemRequestDto.getName());
-    item.setDescription(itemRequestDto.getDescription());
-    item.setPrice(itemRequestDto.getPrice());
-    item.setQuantity(itemRequestDto.getQuantity());
+    @PostMapping("/item")
+    public ResponseEntity<?> saveItem(@RequestBody ItemRequestDto itemRequestDto) {
+        Item item = new Item();
+        item.setName(itemRequestDto.getName());
+        item.setDescription(itemRequestDto.getDescription());
+        item.setPrice(itemRequestDto.getPrice());
+        item.setQuantity(itemRequestDto.getQuantity());
 
-    Category category = categoryService.getCategory(itemRequestDto.getCategoryID());
-    if (category == null) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-             .body("Category not found for ID: " + itemRequestDto.getCategoryID());
+        Category category = categoryService.getCategory(itemRequestDto.getCategoryID());
+        if (category == null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body("Category not found for ID: " + itemRequestDto.getCategoryID());
+        }
+
+        item.setCategory(category);
+        Item savedItem = itemService.saveItem(item);
+
+        return ResponseEntity.ok(savedItem);
     }
-
-    item.setCategory(category);
-    Item savedItem = itemService.saveItem(item);
-
-    return ResponseEntity.ok(savedItem);
-}
 
     @PutMapping("/item/{id}")
     public ResponseEntity<Item> updateItem(@PathVariable Long id, @RequestBody Item item) {
@@ -76,10 +73,5 @@ public ResponseEntity<?> saveItem(@RequestBody ItemRequestDto itemRequestDto) {
         itemService.deleteItem(id);
         return ResponseEntity.status(204).build();
     }
-    
-   
-    
-    
-    
 
 }

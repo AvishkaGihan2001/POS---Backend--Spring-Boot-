@@ -38,5 +38,5 @@ public class ItemServiceImpl implements ItemService {
     public void deleteItem(Long itemID) {
         itemRepository.deleteById(itemID);
     }
-   
+
 }
