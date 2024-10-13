@@ -13,6 +13,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -21,6 +22,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
 @RestController
+@CrossOrigin(origins = "*")
 public class ItemController {
 
     @Autowired
@@ -62,11 +64,29 @@ public class ItemController {
     }
 
     @PutMapping("/item/{id}")
-    public ResponseEntity<Item> updateItem(@PathVariable Long id, @RequestBody Item item) {
-        item.setItemID(id);
+    public ResponseEntity<?> updateItem(@PathVariable Long id, @RequestBody ItemRequestDto itemRequestDto) {
+        Item item = itemService.getItem(id);
+        if (item == null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        }
+
+        item.setName(itemRequestDto.getName());
+        item.setDescription(itemRequestDto.getDescription());
+        item.setPrice(itemRequestDto.getPrice());
+        item.setQuantity(itemRequestDto.getQuantity());
+
+        Category category = categoryService.getCategory(itemRequestDto.getCategoryID());
+        if (category == null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body("Category not found for ID: " + itemRequestDto.getCategoryID());
+        }
+
+        item.setCategory(category);
         Item updatedItem = itemService.updateItem(item);
-        return ResponseEntity.status(200).body(updatedItem);
+
+        return ResponseEntity.ok(updatedItem);
     }
+        
 
     @DeleteMapping("/item/{id}")
     public ResponseEntity<Void> deleteItem(@PathVariable Long id) {
