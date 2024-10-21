@@ -35,7 +35,7 @@ public class CategoryController {
         return ResponseEntity.status(200).body(category);
     }
 
-    @PostMapping ("/category")
+    @PostMapping("/category")
     public ResponseEntity<Category> saveCategory(@RequestBody Category category) {
         Category savedCategory = categoryService.saveCategory(category);
         return ResponseEntity.status(201).body(savedCategory);
@@ -54,8 +54,4 @@ public class CategoryController {
         return ResponseEntity.status(204).build();
     }
 
-    
-
-
-    
 }

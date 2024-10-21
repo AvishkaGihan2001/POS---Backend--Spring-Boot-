@@ -1,5 +1,7 @@
 package com.ijse.pos.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -21,6 +23,13 @@ public class UserController {
 
     @Autowired
     private UserService userService;
+
+    @GetMapping("/users")
+    public ResponseEntity<List<User>> getAllUsers() {
+        List<User> users = userService.getAllUsers();
+        return ResponseEntity.status(200).body(users);
+    }
+    
 
     @GetMapping("/user/{id}")
     public ResponseEntity<User> getUser(@PathVariable Long id) {
@@ -45,6 +54,12 @@ public class UserController {
     public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
         userService.deleteUser(id);
         return ResponseEntity.status(204).build();
+    }
+
+    @PostMapping("/user/login")
+    public ResponseEntity<User> login(@RequestBody User user) {
+        User loggedInUser = userService.login(user);
+        return ResponseEntity.status(200).body(loggedInUser);
     }
     
 }

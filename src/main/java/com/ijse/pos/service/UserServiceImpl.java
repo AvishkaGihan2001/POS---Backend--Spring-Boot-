@@ -1,8 +1,11 @@
 package com.ijse.pos.service;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.ijse.pos.entity.Item;
 import com.ijse.pos.entity.User;
 import com.ijse.pos.repository.UserRepository;
 
@@ -11,6 +14,11 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Override
+    public  List<User> getAllUsers() {
+        return userRepository.findAll();
+    }
 
     @Override
     public User getUser(Long userID) {
@@ -32,5 +40,9 @@ public class UserServiceImpl implements UserService {
         userRepository.deleteById(userID);
     }
 
-    
+    @Override
+    public User login(User user) {
+        return userRepository.findByUsername(user.getUsername()).get();
+    }
+
 }
