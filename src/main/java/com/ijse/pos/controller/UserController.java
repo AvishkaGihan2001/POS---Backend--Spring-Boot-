@@ -14,11 +14,13 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
 @RestController
-@CrossOrigin(origins = "*")
+@CrossOrigin(origins = "*", allowedHeaders = "*", methods = { RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT,
+        RequestMethod.DELETE, RequestMethod.OPTIONS })
 public class UserController {
 
     @Autowired
@@ -29,7 +31,6 @@ public class UserController {
         List<User> users = userService.getAllUsers();
         return ResponseEntity.status(200).body(users);
     }
-    
 
     @GetMapping("/user/{id}")
     public ResponseEntity<User> getUser(@PathVariable Long id) {
@@ -55,11 +56,4 @@ public class UserController {
         userService.deleteUser(id);
         return ResponseEntity.status(204).build();
     }
-
-    @PostMapping("/user/login")
-    public ResponseEntity<User> login(@RequestBody User user) {
-        User loggedInUser = userService.login(user);
-        return ResponseEntity.status(200).body(loggedInUser);
-    }
-    
 }
